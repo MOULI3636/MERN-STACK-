@@ -4,6 +4,9 @@ import fs from "fs";
 // create server
 const app = express();
 
+// allow json data
+app.use(express.json());
+
 // Browser Page
 app.get("/", (req, res) => {
   res.send("This is the main page");
@@ -13,7 +16,7 @@ app.get("/", (req, res) => {
 app.get("/getAll", (req, res) => {
   fs.readFile("info.json", "utf-8", (err, data) => {
     if (err) {
-        return res.send("error");
+      return res.send("error");
     }
     res.send(JSON.parse(data));
   });
@@ -23,7 +26,7 @@ app.get("/getAll", (req, res) => {
 app.get("/getUser/:id", (req, res) => {
   fs.readFile("info.json", "utf-8", (err, data) => {
     if (err) {
-        return res.send("error");
+      return res.send("error");
     }
 
     let users = JSON.parse(data);
@@ -33,14 +36,14 @@ app.get("/getUser/:id", (req, res) => {
   });
 });
 
-// Add User 
-app.get("/addUser/:id/:name/:email/:course", (req, res) => {
+// Add User
+app.post("/addUser", (req, res) => {
   fs.readFile("info.json", "utf-8", (err, data) => {
     let users = [];
 
     if (!err) users = JSON.parse(data);
 
-    users.push(req.params);
+    users.push(req.body);
 
     fs.writeFile("info.json", JSON.stringify(users, null, 2), () => {
       res.send("user added");
@@ -49,14 +52,18 @@ app.get("/addUser/:id/:name/:email/:course", (req, res) => {
 });
 
 // Update User
-app.get("/updateUser/:id/:name", (req, res) => {
+app.put("/updateUser/:id", (req, res) => {
   fs.readFile("info.json", "utf-8", (err, data) => {
     if (err) return res.send("error");
 
     let users = JSON.parse(data);
 
     users.forEach(u => {
-      if (u.id == req.params.id) u.name = req.params.name;
+      if (u.id == req.params.id) {
+        u.name = req.body.name;
+        u.email = req.body.email;
+        u.course = req.body.course;
+      }
     });
 
     fs.writeFile("info.json", JSON.stringify(users, null, 2), () => {
@@ -66,7 +73,7 @@ app.get("/updateUser/:id/:name", (req, res) => {
 });
 
 // Delete User
-app.get("/deleteUser/:id", (req, res) => {
+app.delete("/deleteUser/:id", (req, res) => {
   fs.readFile("info.json", "utf-8", (err, data) => {
     if (err) return res.send("error");
 
