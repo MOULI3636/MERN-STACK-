@@ -9,11 +9,11 @@ app.use(express.json());
 
 // Browser Page
 app.get("/", (req, res) => {
-  res.send("This is the main page");
+  res.send("Student Record Management API Server is running ...");
 });
 
 // Get All Details of Students
-app.get("/getAll", (req, res) => {
+app.get("/students", (req, res) => {
   fs.readFile("info.json", "utf-8", (err, data) => {
     if (err) {
       return res.send("error");
@@ -23,7 +23,7 @@ app.get("/getAll", (req, res) => {
 });
 
 // Access Student By Their Id
-app.get("/getUser/:id", (req, res) => {
+app.get("/students/:id", (req, res) => {
   fs.readFile("info.json", "utf-8", (err, data) => {
     if (err) {
       return res.send("error");
@@ -37,7 +37,7 @@ app.get("/getUser/:id", (req, res) => {
 });
 
 // Add User
-app.post("/addUser", (req, res) => {
+app.post("/students", (req, res) => {
   fs.readFile("info.json", "utf-8", (err, data) => {
     let users = [];
 
@@ -52,7 +52,7 @@ app.post("/addUser", (req, res) => {
 });
 
 // Update User
-app.put("/updateUser/:id", (req, res) => {
+app.put("/students/:id", (req, res) => {
   fs.readFile("info.json", "utf-8", (err, data) => {
     if (err) return res.send("error");
 
@@ -73,7 +73,7 @@ app.put("/updateUser/:id", (req, res) => {
 });
 
 // Delete User
-app.delete("/deleteUser/:id", (req, res) => {
+app.delete("/students/:id", (req, res) => {
   fs.readFile("info.json", "utf-8", (err, data) => {
     if (err) return res.send("error");
 
