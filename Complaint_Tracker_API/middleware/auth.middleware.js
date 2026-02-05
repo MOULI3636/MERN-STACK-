@@ -1,5 +1,13 @@
 const auth = (req, res, next) => {
-    console.log("Auth checked");
+
+    const authHeader = req.headers["authorization"];
+
+    if (!authHeader) {
+        return res.status(401).json({
+            message: "Authorization header is required"
+        });
+    }
+    console.log("Authorization header found:", authHeader);
     next();
 };
 
