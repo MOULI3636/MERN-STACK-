@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Tracker - Admin Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+        }
+        
+        .navbar {
+            background-color: #1a365d;
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-brand h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link.active {
+            background-color: #2d5aa0;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+        
+        .portal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .portal-header h2 {
+            color: #1a365d;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #4a5568;
+            font-size: 18px;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            border-left: 5px solid #2d5aa0;
+        }
+        
+        .stat-card.open {
+            border-left-color: #3182ce;
+        }
+        
+        .stat-card.pending {
+            border-left-color: #ed8936;
+        }
+        
+        .stat-card.resolved {
+            border-left-color: #38a169;
+        }
+        
+        .stat-card.rejected {
+            border-left-color: #e53e3e;
+        }
+        
+        .stat-icon {
+            font-size: 28px;
+            margin-right: 15px;
+            color: #2d5aa0;
+        }
+        
+        .stat-card.open .stat-icon {
+            color: #3182ce;
+        }
+        
+        .stat-card.pending .stat-icon {
+            color: #ed8936;
+        }
+        
+        .stat-card.resolved .stat-icon {
+            color: #38a169;
+        }
+        
+        .stat-card.rejected .stat-icon {
+            color: #e53e3e;
+        }
+        
+        .stat-info h3 {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .stat-info p {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .admin-controls {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .filter-btn {
+            padding: 8px 15px;
+            background-color: #e2e8f0;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background-color: #2d5aa0;
+            color: white;
+        }
+        
+        .auth-section {
+            background-color: #fff8e1;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #ed8936;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .auth-box h4 {
+            color: #975a16;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .auth-box p {
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+        
+        .auth-box input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #cbd5e0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .btn-auth {
+            background-color: #ed8936;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-auth:hover {
+            background-color: #dd6b20;
+        }
+        
+        .complaints-table-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            margin-bottom: 40px;
+        }
+        
+        .complaints-table-container h3 {
+            color: #1a365d;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table thead {
+            background-color: #2d5aa0;
+            color: white;
+        }
+        
+        table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        table tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+        
+        table td {
+            padding: 12px;
+            color: #4a5568;
+            font-size: 14px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            min-width: 70px;
+            text-align: center;
+        }
+        
+        .status-pending {
+            background-color: #feebc8;
+            color: #975a16;
+        }
+        
+        .status-open {
+            background-color: #bee3f8;
+            color: #2d5aa0;
+        }
+        
+        .status-resolved {
+            background-color: #c6f6d5;
+            color: #276749;
+        }
+        
+        .status-rejected {
+            background-color: #fed7d7;
+            color: #c53030;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-action {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-edit {
+            background-color: #3182ce;
+            color: white;
+        }
+        
+        .btn-edit:hover {
+            background-color: #2d5aa0;
+        }
+        
+        .btn-resolve {
+            background-color: #38a169;
+            color: white;
+        }
+        
+        .btn-resolve:hover {
+            background-color: #276749;
+        }
+        
+        .btn-reject {
+            background-color: #e53e3e;
+            color: white;
+        }
+        
+        .btn-reject:hover {
+            background-color: #c53030;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 30px;
+            color: #718096;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-container {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            table th,
+            table td {
+                padding: 8px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>Digital Student Complaint Monitoring and Resolution Platform</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">User Portal</a>
+                <a href="admin.html" class="nav-link active">Admin Portal</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="portal-header">
+            <h2>Admin Dashboard</h2>
+            <p class="subtitle">Manage and track all submitted complaints</p>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card total">
+                <div class="stat-icon">📋</div>
+                <div class="stat-info">
+                    <h3>Total Complaints</h3>
+                    <p>0</p>
+                </div>
+            </div>
+            <div class="stat-card open">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-info">
+                    <h3>Open</h3>
+                    <p>0</p>
+                </div>
+            </div>
+            <div class="stat-card pending">
+                <div class="stat-icon">⌛</div>
+                <div class="stat-info">
+                    <h3>Pending</h3>
+                    <p>0</p>
+                </div>
+            </div>
+            <div class="stat-card resolved">
+                <div class="stat-icon">✓</div>
+                <div class="stat-info">
+                    <h3>Resolved</h3>
+                    <p>0</p>
+                </div>
+            </div>
+            <div class="stat-card rejected">
+                <div class="stat-icon">✗</div>
+                <div class="stat-info">
+                    <h3>Rejected</h3>
+                    <p>0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-controls">
+            <div class="filter-buttons">
+                <button class="filter-btn active">All</button>
+                <button class="filter-btn">Pending</button>
+                <button class="filter-btn">Open</button>
+                <button class="filter-btn">Resolved</button>
+                <button class="filter-btn">Rejected</button>
+            </div>
+        </div>
+
+        <div class="auth-section">
+            <div class="auth-box">
+                <h4>🔐 Admin Authorization</h4>
+                <p>Enter any value to enable admin actions:</p>
+                <input type="text" placeholder="Enter any value...">
+                <button class="btn-auth">Set Authorization</button>
+            </div>
+        </div>
+
+        <div class="complaints-table-container">
+            <h3>All Complaints</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Hostel</th>
+                            <th>Subject</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="9" class="no-data">No complaints found</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
