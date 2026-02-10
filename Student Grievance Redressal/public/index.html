@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Tracker - User Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+        }
+        
+        .navbar {
+            background-color: #1a365d;
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-brand h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link.active {
+            background-color: #2d5aa0;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+        
+        .portal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .portal-header h2 {
+            color: #1a365d;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #4a5568;
+            font-size: 18px;
+        }
+        
+        .info-box {
+            background-color: #e6f2ff;
+            border-left: 5px solid #2d5aa0;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+        
+        .info-box p {
+            color: #2d3748;
+            font-weight: 500;
+        }
+        
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            margin-bottom: 40px;
+        }
+        
+        .complaint-form {
+            width: 100%;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 16px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            background-color: #f8fafc;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2d5aa0;
+            background-color: white;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #e53e3e;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-submit {
+            background-color: #2d5aa0;
+            color: white;
+        }
+        
+        .btn-submit:hover {
+            background-color: #1a365d;
+        }
+        
+        .btn-reset {
+            background-color: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .btn-reset:hover {
+            background-color: #cbd5e0;
+        }
+        
+        .recent-complaints {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .recent-complaints h3 {
+            color: #1a365d;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .complaints-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .complaint-item {
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            background-color: #f8fafc;
+        }
+        
+        .complaint-subject {
+            font-weight: 700;
+            color: #2d3748;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .complaint-date {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .complaint-desc {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .status-pending {
+            background-color: #fed7d7;
+            color: #c53030;
+        }
+        
+        .status-inprogress {
+            background-color: #fefcbf;
+            color: #975a16;
+        }
+        
+        .status-resolved {
+            background-color: #c6f6d5;
+            color: #276749;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 30px;
+            color: #718096;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-brand h1 {
+                font-size: 20px;
+            }
+            
+            .nav-links {
+                gap: 10px;
+            }
+            
+            .portal-header h2 {
+                font-size: 24px;
+            }
+            
+            .form-container,
+            .recent-complaints {
+                padding: 20px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>Digital Student Complaint Monitoring and Resolution Platform</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">User Portal</a>
+                <a href="admin.html" class="nav-link">Admin Portal</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="portal-header">
+            <h2>Submit Your Complaint</h2>
+            <p class="subtitle">A Official Digital Platform for Efficient Complaint Registration, Real-Time Tracking, and Timely Resolution.</p>
+        </div>
+
+        <div class="info-box">
+            <p>Please provide accurate information. All complaints are reviewed by the appropriate department.</p>
+        </div>
+
+        <div class="form-container">
+            <form class="complaint-form">
+                <div class="form-group">
+                    <label class="required">Full Name</label>
+                    <input type="text" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Email Address</label>
+                    <input type="email" placeholder="Enter your email address" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Phone Number</label>
+                    <input type="tel" placeholder="Enter your contact number" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Hostel Type</label>
+                    <select required>
+                        <option value="">Select Hostel Type</option>
+                        <option>Boys Hostel</option>
+                        <option>Girls Hostel</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Hostel/Room Number</label>
+                    <input type="text" placeholder="e.g., Block A, Room 101" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Subject of Complaint</label>
+                    <input type="text" placeholder="Brief subject of your complaint" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Detailed Description</label>
+                    <textarea placeholder="Provide complete details of your complaint..." required></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-submit">Submit Complaint</button>
+                    <button type="reset" class="btn btn-reset">Clear Form</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="recent-complaints">
+            <h3>Your Complaints</h3>
+            <div class="complaints-list">
+                <div class="no-data">
+                    <p>No complaints submitted yet. Submit your first complaint using the form above.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
